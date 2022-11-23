@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>File Upload</title>
+
+	<style type="text/css">
+		body {
+			margin: 0 auto;
+			max-width: 40em;
+			width: 88%;
+		}
+
+		label,
+		input {
+			display: block;
+			width: 100%;
+		}
+
+		input {
+			margin-bottom: 1em;
+		}
+	</style>
+</head>
+<body>
+
+	<h1>SRI arreglar archivo</h1>
+
+	<form id="upload">
+		<label for="file">Subir el archivo</label>
+		<input type="file" id="file">
+
+		<button>Subir</button>
+	</form>
+<script src='FileSaver.js'></script>
+
+	<script>
+		// Get the form and file field
+		let form = document.querySelector('#upload');
+		let file = document.querySelector('#file');
+
+		/**
+		 * Log the uploaded file to the console
+		 * @param {event} Event The file loaded event
+		 */
+		// function logFile (event) {
+		// 	let str = event.target.result;
+		// 	let json = JSON.parse(str);
+		// 	console.log('string', str);
+		// 	console.log('json', json);
+		// }
+
+		/**
+		 * Log the uploaded file to the console
+		 * @param {event} Event The file loaded event
+		 */
+		function readFile (event) {
+			let contenido = event.target.result;
+			contenido = contenido.replaceAll("\t\t", "\t");
+			contenido = contenido.replaceAll("\n", "\t");
+			contenido = contenido.replaceAll("\tFactura","\nFactura");
+
+			console.log('', contenido);
+   			var blob = new Blob([contenido],
+                { type: "text/plain;charset=utf-8" });
+            saveAs(blob, "nuevo.txt");
+
+		}
+
+		/**
+		 * Handle submit events
+		 * @param  {Event} event The event object
+		 */
+		function handleSubmit (event) {
+
+			// Stop the form from reloading the page
+			event.preventDefault();
+
+			// If there's no file, do nothing
+			if (!file.value.length) return;
+
+			// Create a new FileReader() object
+			let reader = new FileReader();
+
+			// Setup the callback event to run when the file is read
+			reader.onload = readFile;
+
+			// Read the file
+			reader.readAsText(file.files[0]);
+
+		}
+
+		// Listen for submit events
+		form.addEventListener('submit', handleSubmit);
+	</script>
+</body>
+</html>
